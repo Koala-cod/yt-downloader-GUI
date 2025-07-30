@@ -71,6 +71,7 @@ def main():
             transform(video_name, video_entry.get())
         if (audio_entry.get() != ""):
             transform(audio_name, audio_entry.get())
+        os.startfile(os.getcwd())
             
     #main window
     root = ctk.CTk()
