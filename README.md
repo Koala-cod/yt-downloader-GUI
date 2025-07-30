@@ -19,6 +19,6 @@ A powerful Python gui for downloading YouTube videos and extracting audio with a
 ## 📦 Requirements
 
 - FFmpeg (must be installed system-wide)
-- Required Python packages (can be found in requirements.txt):
+- Required Python packages (can be found in [requirements.txt](https://github.com/Koala-cod/yt-downloader-GUI/blob/main/requirements.txt)):
     [customtkinter](https://customtkinter.tomschimansky.com/)
     [pytubefix](https://pypi.org/project/pytubefix/)
