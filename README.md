@@ -15,6 +15,17 @@ A powerful Python gui for downloading YouTube videos and extracting audio with a
 - **Audio Extraction**: Convert videos to high-quality audio files
 - **FFmpeg Integration**: Loseless format conversion when possible
 - **Duplicate Solution**: Deletes file if already exists to get newer version
+- **Headless Mode**: Make it possible to use even without a GUI
+
+## Headless Mode
+
+To use just do
+```
+main.pyw <option> <link> <output_format>
+```
+Option can be :
+-a | --audio : for audio download
+-v | --video : for video download
 
 ## 📦 Requirements
 
