@@ -21,7 +21,10 @@ A powerful Python gui for downloading YouTube videos and extracting audio with a
 
 To use just do
 ```
+script:
 main.pyw <option> <link> <output_format>
+program:
+yt-downloader-GUI.exe <option> <link> <output_format>
 ```
 Option can be :
 -a | --audio : for audio download
