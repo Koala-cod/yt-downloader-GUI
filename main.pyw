@@ -2,49 +2,66 @@ from pytubefix import YouTube
 import customtkinter as ctk
 import tkinter as tk
 import os
+import sys
 
+def Download(video: bool, music: bool,link: str) -> (tuple | int):
+    youtubeObject = YouTube(link)
+    video_name = ""
+    audio_name = ""
+    if (video):
+        youtubeObject_video = youtubeObject.streams.get_highest_resolution()
+        try:
+            video_name = youtubeObject_video.download()
+        except:
+            return -1
+    if (music):
+        youtubeObject_audio = youtubeObject.streams.get_audio_only()
+        try:
+            audio_name = youtubeObject_audio.download()
+        except:
+            return -1
+    return (video_name, audio_name)
 
+def transform(name_file: str, name_out: str) -> (None | int):
+    new_name = ''
+    #getting the file name wihtout the extension
+    for letter in name_file:
+        if letter == ".": break
+        new_name+=letter
+        
+    #checking if the user has put the dor or not
+    if name_out[0] != ".": name_out = "." + name_out
+    new_name += name_out
 
+    if (new_name == name_file): return
+    #ffmpeg magic
+    os.system(f'ffmpeg -y -i "{name_file}" "{new_name}"')
+    os.remove(name_file)
+
+def argument_handler():
+    video_name = ""
+    audio_name = ""
+    if (len(sys.argv) <= 1): return
+    match(sys.argv[1]):
+        case "-v" | "--video":
+            video_name, audio_name = Download(True, False, sys.argv[2])
+            transform(video_name, sys.argv[3])
+        case "-a" | "--audio":
+            video_name, audio_name = Download(False, True, sys.argv[2])
+            transform(audio_name,sys.argv[3])
+        case "_":
+            pass
+    sys.exit()
 
 def main(): 
-
     def is_yt_link(link: str):
     #just checking if it start with youtu nothing else lel
-        return (link.startswith("https://youtu") or link.startswith("youtu") or link.startswith("https://www.youtu"))
-    
-    def Download(video: bool, music: bool,link: str) -> (tuple | int):
-        youtubeObject = YouTube(link)
-        video_name = ""
-        audio_name = ""
-        if (video):
-            youtubeObject_video = youtubeObject.streams.get_highest_resolution()
-            try:
-                video_name = youtubeObject_video.download()
-            except:
-                return -1
-        if (music):
-            youtubeObject_audio = youtubeObject.streams.get_audio_only()
-            try:
-                audio_name = youtubeObject_audio.download()
-            except:
-                return -1
-        return (video_name, audio_name)
+        #return (link.startswith("https://youtu") or link.startswith("youtu") or link.startswith(""))
+        return "youtu" in link
 
-    def transform(name_file: str, name_out: str) -> (None | int):
-        new_name = ''
-        #getting the file name wihtout the extension
-        for letter in name_file:
-            if letter == ".": break
-            new_name+=letter
-
-        #checking if the user has put the dor or not
-        if name_out[0] != ".": name_out = "." + name_out
-        new_name += name_out
-
-        if (new_name == name_file): return
-        #ffmpeg magic
-        os.system(f'ffmpeg -y -i "{name_file}" "{new_name}"')
-        os.remove(name_file)
+    def paste():
+        yt_link_entry.delete(0, len(yt_link_entry.get()))
+        yt_link_entry.insert(0, root.clipboard_get())
     
     def enable_video_entry():
         if (video_switch.get()): video_entry.configure(state="normal")
@@ -65,13 +82,13 @@ def main():
             error_link_label.configure(text="link is malformed or wrong")
             return
         video_name, audio_name = r
+        os.startfile(os.getcwd())
 
         #changing file type check
         if (video_entry.get() != ""):
             transform(video_name, video_entry.get())
         if (audio_entry.get() != ""):
             transform(audio_name, audio_entry.get())
-        os.startfile(os.getcwd())
             
     #main window
     root = ctk.CTk()
@@ -87,8 +104,12 @@ def main():
     
     
     #create the label to entry the yt link
-    yt_link_entry = ctk.CTkEntry(root, width=250,placeholder_text="youtube link", justify=tk.CENTER)
-    yt_link_entry.place(anchor=tk.N, relx=0.5, rely= 0.2)
+    yt_link_entry = ctk.CTkEntry(root, width=200,placeholder_text="youtube link", justify=tk.LEFT)
+    yt_link_entry.place(anchor=tk.N, relx=0.37, rely= 0.2)
+
+    #paste link
+    paste_button = ctk.CTkButton(root,width=50, text="paste",text_color="red",command=paste)
+    paste_button.place(anchor=tk.W, relx=0.75, rely= 0.245)
     
     #error handling entry
     error_link_label = ctk.CTkLabel(root, text="")
@@ -120,6 +141,7 @@ def main():
     root.mainloop()
 
 if __name__ == "__main__":
+    argument_handler()
     main()
     
     
